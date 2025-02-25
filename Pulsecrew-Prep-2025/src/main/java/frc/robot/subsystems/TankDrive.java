@@ -87,6 +87,14 @@ public class TankDrive extends SubsystemBase {
         rightMotor[0].stopMotor();
     }
 
+    public Encoder getLeftEncoder() {
+        return leftEncoder;
+    }
+
+    public Encoder getRightEncoder() {
+        return rightEncoder;
+    }
+
     //Distance
     public double getLeftDistance() {
         return leftEncoder.getDistance();
