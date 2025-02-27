@@ -24,10 +24,14 @@ public class SwerveDrive extends SubsystemBase{
 
     static {
         instance = new SwerveDrive(
-            new SwerveModule("Front Left", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 0, 1, 2),
-            new SwerveModule("Front Right", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 3, 4, 5),
-            new SwerveModule("Back Left", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 6, 7, 8),
-            new SwerveModule("Back Right", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 6, 7, 8)
+            // new SwerveModule("Front Left", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 15, 14, 5),
+            // new SwerveModule("Front Right", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 13, 12, 4),
+            // new SwerveModule("Back Left", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 0, 1, 3),
+            // new SwerveModule("Back Right", new Translation2d(0, 0), Rotation2d.fromDegrees(0), 2, 3, 2) 
+            new SwerveModule("Front Left", new Translation2d(0, 0), Rotation2d.fromDegrees(-53.701172), 16, 15, 4),
+            new SwerveModule("Front Right", new Translation2d(0, 0), Rotation2d.fromDegrees(21.796875), 10, 17, 1),
+            new SwerveModule("Back Left", new Translation2d(0, 0), Rotation2d.fromDegrees(96.591797), 14, 13, 3),
+            new SwerveModule("Back Right", new Translation2d(0, 0), Rotation2d.fromDegrees(-141.152344), 12, 11, 2) 
         );
     }
 

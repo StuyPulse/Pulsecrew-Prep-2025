@@ -18,7 +18,7 @@ public class RobotContainer {
 
   private SwerveDrive swerve = SwerveDrive.getInstance();
   private SendableChooser<Command> autonChooser = new SendableChooser<>();
-  private XboxController driverController;
+  private XboxController driverController = new XboxController(0);
 
   public RobotContainer() {
     configureDefaultCommands();
