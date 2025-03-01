@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.auton.DoNothingAuton;
 import frc.robot.commands.auton.Mobility;
 import frc.robot.commands.swerve.SwerveDriveDrive;
+import frc.robot.commands.swerve.SwerveDriveDrive;
 import frc.robot.subsystems.Swerve.SwerveDrive;
 
 public class RobotContainer {
@@ -37,7 +38,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auton", autonChooser);
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+  }
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
