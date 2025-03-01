@@ -1,11 +1,19 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.studica.frc.AHRS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16448_IMU;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
@@ -26,6 +34,9 @@ public class TankDrive extends SubsystemBase {
 
     PWMMotorController[] leftMotor;
     PWMMotorController[] rightMotor;
+    
+    // SparkMax[] leftMotor;
+    // SparkMax[] rightMotor;
 
     Encoder leftEncoder;
     Encoder rightEncoder;
@@ -58,12 +69,33 @@ public class TankDrive extends SubsystemBase {
         leftMotor[0].addFollower(leftMotor[1]);
         rightMotor[0].addFollower(rightMotor[1]);
 
+        // leftMotor = 
+        //     new SparkMax[] {
+        //         new SparkMax(10, MotorType.kBrushless), //Front
+        //         new SparkMax(11, MotorType.kBrushless), //Mid
+        //         new SparkMax(12, MotorType.kBrushless) //Back
+        //     };
+        
+        // rightMotor = 
+        //     new SparkMax[] {
+        //         new SparkMax(13, MotorType.kBrushless), //Front
+        //         new SparkMax(14, MotorType.kBrushless), //Mid
+        //         new SparkMax(15, MotorType.kBrushless) //Back
+        //     };
+
+        
+
         tankDrive = new DifferentialDrive(
             leftMotor[0], 
             rightMotor[0]);
 
+        leftEncoder = new Encoder(0, 1);
+        rightEncoder = new Encoder(2, 3);
+        setGrayhillDistancePerPulse(Units.inchesToMeters(4.0) / 256.0 * (1.0/3.0 * 17.0/25.0));
+
         gyro = new ADIS16448_IMU();
         gyroAngle = new Rotation2d(Units.degreesToRadians(gyro.getAngle()));
+
         odometry = new DifferentialDriveOdometry(gyroAngle, leftEncoder.getDistance(), rightEncoder.getDistance());
 
     }
@@ -86,6 +118,15 @@ public class TankDrive extends SubsystemBase {
         leftMotor[0].stopMotor();
         rightMotor[0].stopMotor();
     }
+
+    private void setGrayhillDistancePerPulse(double distance) {
+        leftEncoder.setDistancePerPulse(distance);
+        leftEncoder.reset();
+
+        rightEncoder.setDistancePerPulse(distance);
+        rightEncoder.reset();
+    }
+
 
     public Encoder getLeftEncoder() {
         return leftEncoder;
@@ -157,6 +198,7 @@ public class TankDrive extends SubsystemBase {
         tankDrive.arcadeDrive(speed, rotation, false);
     }
 
+    @Override
     public void periodic() {
         gyroAngle = new Rotation2d(Units.degreesToRadians(gyro.getAngle()));
         odometry.update(gyroAngle, leftEncoder.getDistance(), rightEncoder.getDistance());
