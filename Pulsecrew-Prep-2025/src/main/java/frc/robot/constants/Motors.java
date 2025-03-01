@@ -39,18 +39,17 @@ public class Motors {
             double kV = 1.7573 + 0.1;
             double kA = 0.19554 + 0.1;
 
-            double MAX_MODULE_SPEED = 100.0;
-            double MAX_MODULE_ACCEL = 100.0;
+            double MAX_MODULE_SPEED = 10.0;
+            double MAX_MODULE_ACCEL = 10.0;
             double MODULE_VELOCITY_DEADBAND = 0.02;
         }
 
         public interface Encoder {
             double WHEEL_DIAMETER = Units.inchesToMeters(4);
             double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
-            double GEAR_RATIO = 1.0 / 6.12;
+            double GEAR_RATIO = 5.36;
 
-            double POSITION_CONVERSION = WHEEL_CIRCUMFERENCE * GEAR_RATIO;
-            double VELOCITY_CONVERSION = POSITION_CONVERSION / 60.0;
+            double POSITION_CONVERSION = WHEEL_CIRCUMFERENCE / GEAR_RATIO;
         } 
 
     }

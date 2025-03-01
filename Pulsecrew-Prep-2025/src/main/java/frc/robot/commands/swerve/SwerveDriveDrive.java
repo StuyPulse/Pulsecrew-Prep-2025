@@ -3,7 +3,6 @@ package frc.robot.commands.swerve;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve.SwerveDrive;
@@ -41,8 +40,8 @@ public class SwerveDriveDrive extends Command {
 
     @Override
     public void execute() {
-        Translation2d speed = (new Translation2d(driver.getLeftY(), driver.getLeftX()));
-        double rotation = (driver.getRightX());
+        Translation2d speed = filterSpeed(new Translation2d(driver.getLeftY(), driver.getLeftX()));
+        double rotation = filterTurn(driver.getRightX() * 360);
 
         swerve.drive(speed, rotation);
     }

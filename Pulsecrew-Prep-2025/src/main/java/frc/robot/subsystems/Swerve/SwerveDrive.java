@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Motors;
-
 
 public class SwerveDrive extends SubsystemBase{
 
@@ -65,7 +63,6 @@ public class SwerveDrive extends SubsystemBase{
         //TODO: Robot Specific
         double WIDTH = Units.inchesToMeters(18.75);
         double LENGTH = Units.inchesToMeters(18.75);
-        double CENTER_TO_INTAKE_FRONT = Units.inchesToMeters(18);
 
         double MODULE_VELOCITY_DEADBAND = 0.05; //m/s
 
@@ -213,13 +210,13 @@ public class SwerveDrive extends SubsystemBase{
         odometry.resetPosition(getGyroAngle(), getModulePositions(), pose);
     }
 
-    public void updateOdomentry() {
+    public void updateOdometry() {
         odometry.update(getGyroAngle(), getModulePositions());
     }
 
     @Override
     public void periodic() {
-        updateOdomentry();
+        updateOdometry();
         Pose2d pose = getPose();
 
         for (int i = 0; i < modules.length; i++) {
