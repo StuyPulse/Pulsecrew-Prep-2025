@@ -15,6 +15,9 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
 
@@ -23,12 +26,13 @@ public class Motors {
     public interface Swerve {
         TalonFXConfig MOTOR_CONFIG = new TalonFXConfig()
         .withCurrentLimitAmps(60)
-        .withInvertedValue(InvertedValue.Clockwise_Positive)
         .withRampRate(0.1)
         .withNeutralMode(NeutralModeValue.Brake)
         .withSensorToMechanismRatio(Encoder.GEAR_RATIO)
         .withFFConstants(Drive.kS, Drive.kV, Drive.kA, 0)
         .withMotionProfile(Drive.MAX_MODULE_SPEED, Drive.MAX_MODULE_ACCEL);
+
+        SparkBaseConfig TURN_CONFIG = new SparkMaxConfig().inverted(true).smartCurrentLimit(200).openLoopRampRate(0.25).idleMode(IdleMode.kBrake);
         
         public interface Drive {
             double kS = 0.17313;
@@ -37,6 +41,7 @@ public class Motors {
 
             double MAX_MODULE_SPEED = 100.0;
             double MAX_MODULE_ACCEL = 100.0;
+            double MODULE_VELOCITY_DEADBAND = 0.02;
         }
 
         public interface Encoder {

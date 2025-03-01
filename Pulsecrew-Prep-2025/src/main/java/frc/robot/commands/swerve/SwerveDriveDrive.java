@@ -3,6 +3,7 @@ package frc.robot.commands.swerve;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve.SwerveDrive;
@@ -35,12 +36,13 @@ public class SwerveDriveDrive extends Command {
 
         double MAX_TELEOP_SPEED = 5.55; //"Driver Settings/Drive/Max Speed"
         double MAX_TELEOP_TURNING = 6.0; //"Driver Settings/Turn/Max Turning"
+        double MAX_ANGULAR_VELOCITY = 360.0;
     }
 
     @Override
     public void execute() {
-        Translation2d speed = filterSpeed(new Translation2d(driver.getLeftX(), driver.getLeftY()));
-        double rotation = filterTurn(driver.getRightX());
+        Translation2d speed = (new Translation2d(driver.getLeftY(), driver.getLeftX()));
+        double rotation = (driver.getRightX());
 
         swerve.drive(speed, rotation);
     }
