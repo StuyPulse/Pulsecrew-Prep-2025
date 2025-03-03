@@ -39,7 +39,7 @@ public class SwerveModuleImpl extends SwerveModule {
         driveMotor.getConfigurator().apply(Motors.Swerve.Drive.motorConfig);
         driveMotor.setPosition(0);
 
-        pivotController = new PIDController(Motors.Turn.kP, Motors.Turn.kI, Motors.Turn.kD);
+        pivotController = new PIDController(Motors.Swerve.Turn.kP, Motors.Swerve.Turn.kI, Motors.Swerve.Turn.kD);
         pivotController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
