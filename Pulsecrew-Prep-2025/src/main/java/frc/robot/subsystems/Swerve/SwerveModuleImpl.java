@@ -15,7 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class SwerveModuleAImpl extends SwerveModuleA {
+public class SwerveModuleImpl extends SwerveModule {
 
     private final Rotation2d angleOffset;
 
@@ -25,7 +25,7 @@ public class SwerveModuleAImpl extends SwerveModuleA {
 
     private final PIDController pivotController;
 
-    public SwerveModuleAImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID) {
+    public SwerveModuleImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID) {
         super(name, location);
 
         this.angleOffset = angleOffset;

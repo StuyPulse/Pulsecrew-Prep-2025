@@ -1,9 +1,6 @@
 package frc.robot.subsystems.Swerve;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.swerve.SwerveModule;
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,19 +8,16 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Field;
 import frc.robot.constants.Motors;
-import frc.robot.constants.Motors.Swerve;
 import frc.robot.subsystems.Odometry.Odometry;
 import frc.robot.constants.Constants.Swerve.*;
 import frc.robot.constants.Ports;
@@ -34,18 +28,10 @@ public class SwerveDrive extends SubsystemBase{
 
     static {
         instance = new SwerveDrive(
-            // new SwerveModule("Front Left", new Translation2d(Swerve.LENGTH * 0.0, Swerve.WIDTH * 0.0), Rotation2d.fromDegrees(125.507812), 16, false, 15, 4),
-            // new SwerveModule("Front Right", new Translation2d(Swerve.LENGTH * 0, Swerve.WIDTH * -0), Rotation2d.fromDegrees(-158.378906), 10, true, 17, 1),
-            // new SwerveModule("Back Left", new Translation2d(Swerve.LENGTH * -0, Swerve.WIDTH * 0), Rotation2d.fromDegrees(-84.287109), 14, false, 13, 3),
-            // new SwerveModule("Back Right", new Translation2d(Swerve.LENGTH * -0, Swerve.WIDTH * -0), Rotation2d.fromDegrees(37.353516), 12, true, 11, 2) 
-            // new SwerveModule("Front Left", new Translation2d(Swerve.LENGTH * 0.5, Swerve.WIDTH * 0.5), Rotation2d.fromDegrees(125.507812), 16, false, 17, 2),
-            // new SwerveModule("Front Right", new Translation2d(Swerve.LENGTH * 0.5, Swerve.WIDTH * -0.5), Rotation2d.fromDegrees(-158.378906), 14, true, 15, 4),
-            // new SwerveModule("Back Left", new Translation2d(Swerve.LENGTH * -0.5, Swerve.WIDTH * 0.5), Rotation2d.fromDegrees(-84.287109), 10, false, 11, 3),
-            // new SwerveModule("Back Right", new Translation2d(Swerve.LENGTH * -0.5, Swerve.WIDTH * -0.5), Rotation2d.fromDegrees(37.353516), 12, true, 13, 1) 
-            new SwerveModuleAImpl(FrontLeft.ID, FrontLeft.MODULE_OFFSET, FrontLeft.ABSOLUTE_OFFSET, Ports.Swerve.FrontLeft.DRIVE, Ports.Swerve.FrontLeft.TURN, Ports.Swerve.FrontLeft.ENCODER),
-            new SwerveModuleAImpl(BackLeft.ID, BackLeft.MODULE_OFFSET, BackLeft.ABSOLUTE_OFFSET, Ports.Swerve.BackLeft.DRIVE, Ports.Swerve.BackLeft.TURN, Ports.Swerve.BackLeft.ENCODER),
-            new SwerveModuleAImpl(BackRight.ID, BackRight.MODULE_OFFSET, BackRight.ABSOLUTE_OFFSET, Ports.Swerve.BackRight.DRIVE, Ports.Swerve.BackRight.TURN, Ports.Swerve.BackRight.ENCODER),
-            new SwerveModuleAImpl(FrontRight.ID, FrontRight.MODULE_OFFSET, FrontRight.ABSOLUTE_OFFSET, Ports.Swerve.FrontRight.DRIVE, Ports.Swerve.FrontRight.TURN, Ports.Swerve.FrontRight.ENCODER)
+            new SwerveModuleImpl(FrontLeft.ID, FrontLeft.MODULE_OFFSET, FrontLeft.ABSOLUTE_OFFSET, Ports.Swerve.FrontLeft.DRIVE, Ports.Swerve.FrontLeft.TURN, Ports.Swerve.FrontLeft.ENCODER),
+            new SwerveModuleImpl(BackLeft.ID, BackLeft.MODULE_OFFSET, BackLeft.ABSOLUTE_OFFSET, Ports.Swerve.BackLeft.DRIVE, Ports.Swerve.BackLeft.TURN, Ports.Swerve.BackLeft.ENCODER),
+            new SwerveModuleImpl(BackRight.ID, BackRight.MODULE_OFFSET, BackRight.ABSOLUTE_OFFSET, Ports.Swerve.BackRight.DRIVE, Ports.Swerve.BackRight.TURN, Ports.Swerve.BackRight.ENCODER),
+            new SwerveModuleImpl(FrontRight.ID, FrontRight.MODULE_OFFSET, FrontRight.ABSOLUTE_OFFSET, Ports.Swerve.FrontRight.DRIVE, Ports.Swerve.FrontRight.TURN, Ports.Swerve.FrontRight.ENCODER)
         );
     }
 
@@ -53,7 +39,7 @@ public class SwerveDrive extends SubsystemBase{
         return instance;
     }
 
-    private final SwerveModuleA[] modules;
+    private final SwerveModule[] modules;
     private final SwerveDriveKinematics kinematics;
     // private final AHRS gyro;
     private final Pigeon2 gyro;
@@ -61,7 +47,7 @@ public class SwerveDrive extends SubsystemBase{
     // private final Field2d field;
     private final FieldObject2d[] modules2ds;
 
-    protected SwerveDrive(SwerveModuleAImpl... modules) {
+    protected SwerveDrive(SwerveModuleImpl... modules) {
         this.modules = modules;
 
         gyro = new Pigeon2(9, "Swerve Drive Drive");
@@ -105,8 +91,8 @@ public class SwerveDrive extends SubsystemBase{
         return states;
     }
 
-    private SwerveModuleA getModule(String id) {
-        for (SwerveModuleA module : modules)
+    private SwerveModule getModule(String id) {
+        for (SwerveModule module : modules)
             if (module.getName().equals(id)) {
                 return module;
         }
