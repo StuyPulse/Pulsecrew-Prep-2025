@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.Swerve.SwerveDrive;
 
 public class SwerveDriveDrive extends Command{
@@ -33,7 +34,12 @@ public class SwerveDriveDrive extends Command{
             x *= x * 1.5;
             y *= y * 1.5; 
             
-            return new Translation2d(x, y);
+            if (Robot.isBlue()) {
+                return new Translation2d(x, y);
+            } else {
+                return new Translation2d(-x, -y);
+            }
+            
         };
         
         turn = () -> {
@@ -47,7 +53,12 @@ public class SwerveDriveDrive extends Command{
 
             inputTurn *= 2 * Math.PI;
 
-            return inputTurn;
+            if (Robot.isBlue()) {
+                return inputTurn;
+            } else {
+                return -inputTurn;
+            }
+            
         };
         
         addRequirements(swerve);

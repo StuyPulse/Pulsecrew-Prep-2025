@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -16,9 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.constants.Field;
 import frc.robot.constants.Motors;
-import frc.robot.subsystems.Odometry.Odometry;
+
 import frc.robot.constants.Constants.Swerve.*;
 import frc.robot.constants.Ports;
 
@@ -43,17 +43,17 @@ public class SwerveDrive extends SubsystemBase{
     private final SwerveDriveKinematics kinematics;
     // private final AHRS gyro;
     private final Pigeon2 gyro;
-    // private final SwerveDriveOdometry odometry;
-    // private final Field2d field;
+    private final SwerveDriveOdometry odometry;
+    private final Field2d field;
     private final FieldObject2d[] modules2ds;
 
     protected SwerveDrive(SwerveModuleImpl... modules) {
         this.modules = modules;
 
         gyro = new Pigeon2(9, "Swerve Drive Drive");
-
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
-
+        odometry = new SwerveDriveOdometry(kinematics, getGyroAngle(), getModulePositions());
+        field = new Field2d();
         modules2ds = new FieldObject2d[modules.length];
     }
 
@@ -61,7 +61,6 @@ public class SwerveDrive extends SubsystemBase{
     public void initFieldObjects(Field2d field) {
         for (int i = 0; i < modules.length; i++) {
             modules2ds[i] = field.getObject(modules[i].getName()+"-2d");
-            modules2ds[i].setPose(Robot.isBlue() ? modules2ds[i].getPose() : Field.transformToOppositeAlliance(modules2ds[i].getPose()));
         }
     }
 
@@ -109,7 +108,7 @@ public class SwerveDrive extends SubsystemBase{
                 velocity.getX(),
                 velocity.getY(),
                 omega,
-                Odometry.getInstance().getRotation());
+                getGyroAngle());
 
         Pose2d robotVel = new Pose2d(
             0.02 * speeds.vxMetersPerSecond,
@@ -204,6 +203,10 @@ public class SwerveDrive extends SubsystemBase{
         setModuleStates(state);
     }
 
+    public void updateOdometry() {
+        odometry.update(getGyroAngle(), getModulePositions());
+    }
+
     // public void configureAutoBuilder() {        
     //     try{
     //         Odometry odometry = Odometry.getInstance();
@@ -228,16 +231,15 @@ public class SwerveDrive extends SubsystemBase{
 
     @Override
     public void periodic() {
-        Odometry odometry = Odometry.getInstance();
-        Pose2d pose = odometry.getPose();
-        Rotation2d angle = odometry.getRotation();
+        updateOdometry();
+        Pose2d pose = odometry.getPoseMeters();
+        Rotation2d angle = getGyroAngle();
 
         for (int i = 0; i < modules.length; ++i) {
             Pose2d modulePose = new Pose2d(
                 pose.getTranslation().plus(modules[i].getModuleOffset().rotateBy(angle)),
                 modules[i].getState().angle.plus(angle)
             );
-            modules2ds[i].setPose(Robot.isBlue() ? modulePose : Field.transformToOppositeAlliance(modulePose));
         }
 
         SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroPitch());
