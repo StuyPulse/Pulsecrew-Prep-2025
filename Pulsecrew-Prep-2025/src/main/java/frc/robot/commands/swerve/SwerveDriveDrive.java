@@ -15,15 +15,15 @@ public class SwerveDriveDrive extends Command{
 
     private final Supplier<Translation2d> speed;
     private final DoubleSupplier turn;
-    // private final LinearFilter speedFilter;
-    // private final LinearFilter turnFilter;
+    private final LinearFilter speedFilter;
+    private final LinearFilter turnFilter;
 
     public SwerveDriveDrive(XboxController driver) {
         swerve = SwerveDrive.getInstance();
         this.driver = driver;
 
-        // speedFilter = LinearFilter.singlePoleIIR(SwerveDriver.DRIVE_RC, 0.02);
-        // turnFilter = LinearFilter.singlePoleIIR(SwerveDriver.TURN_RC, 0.02);
+        speedFilter = LinearFilter.singlePoleIIR(2, 0.02);
+        turnFilter = LinearFilter.singlePoleIIR(2, 0.02);
 
         speed = () -> {
             Translation2d inputVel = getInputVelocity();
@@ -39,8 +39,8 @@ public class SwerveDriveDrive extends Command{
             x *= x * 1.5;
             y *= y * 1.5; 
 
-            // x = speedFilter.calculate(x);
-            // y = speedFilter.calculate(y);
+            x = speedFilter.calculate(x);
+            y = speedFilter.calculate(y);
             
             return new Translation2d(x, y);
         };
@@ -55,7 +55,7 @@ public class SwerveDriveDrive extends Command{
             inputTurn *= Math.signum(inputTurn) * inputTurn;
 
             inputTurn *= 2 * Math.PI;
-            // inputTurn = turnFilter.calculate(inputTurn);
+            inputTurn = turnFilter.calculate(inputTurn);
 
             return inputTurn;
         };

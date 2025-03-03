@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Swerve;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -50,7 +51,7 @@ public class SwerveDrive extends SubsystemBase{
     protected SwerveDrive(SwerveModuleImpl... modules) {
         this.modules = modules;
 
-        gyro = new Pigeon2(9, "Swerve Drive Drive");
+        gyro = new Pigeon2(9);
 
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
 
@@ -249,194 +250,12 @@ public class SwerveDrive extends SubsystemBase{
         SmartDashboard.putNumber("Swerve/Z Acceleration (Gs)", gyro.getAccelerationZ().getValueAsDouble());
     }
 
-
-    // public SwerveDrive(SwerveModule... modules) {
-    //     this.modules = modules;
-    //     kinematics = new SwerveDriveKinematics(getModuleOffsets());
-    //     // gyro = new AHRS(NavXComType.kMXP_SPI);
-    //     gyro = new Pigeon2(9, "Swerve Drive Drive");
-    //     odometry = new SwerveDriveOdometry(kinematics, getGyroAngle(), getModulePositions());
-    //     field = new Field2d();
-    //     modules2ds = new FieldObject2d[modules.length];
-        
-    //     initmodules2ds(field);
-    //     reset(new Pose2d());
-    // }
-
     // Constants    
     public interface Swerve {
-        //TODO: Robot Specific
         double WIDTH = Units.inchesToMeters(18.75);
         double LENGTH = Units.inchesToMeters(18.75);
 
         double MODULE_VELOCITY_DEADBAND = 0.05; //m/s
     }
 
-    // public void initmodules2ds(Field2d field) {
-    //     for(int i=0; i<modules.length; i++) {
-    //         modules2ds[i] = field.getObject(modules[i].getId() + "-2d");
-    //     }
-    // }
-
-    // public Translation2d[] getModuleOffsets() {
-    //     Translation2d[] offsets = new Translation2d[modules.length];
-
-    //     for(int i=0; i<modules.length; i++) {
-    //         offsets[i] = modules[i].getTranslationOffset();
-    //     }
-
-    //     return offsets;
-    // }
-
-    // public SwerveModuleState[] getModuleStates() {
-    //     SwerveModuleState[] states = new SwerveModuleState[modules.length];
-        
-    //     for(int i=0; i<modules.length; i++) {
-    //         states[i] = modules[i].getModuleState();
-    //     }
-
-    //     return states;
-    // }
-
-    // public SwerveModulePosition[] getModulePositions() {
-    //     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
-
-    //     for(int i=0; i<modules.length; i++) {
-    //         positions[i] = modules[i].getModulePosition();
-    //     }
-
-    //     return positions;
-    // }
-
-    // public ChassisSpeeds getChassisSpeeds() {
-    //     return kinematics.toChassisSpeeds(getModuleStates());
-    // }
-
-    // public SwerveModuleState filterModuleState(SwerveModuleState state) {
-    //     if (Math.abs(state.speedMetersPerSecond) > Swerve.MODULE_VELOCITY_DEADBAND) {
-    //         return state;
-    //     }
-
-    //     return new SwerveModuleState(0, state.angle);
-    // }
-
-    // public void setModuleStates(SwerveModuleState... states) {
-    //     if (states.length != modules.length) {
-    //         throw new IllegalArgumentException(
-    //             String.format("State count mismatch error: %d states does not equal %d modules", states.length, modules.length)
-    //         );
-    //     }
-
-    //     SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.MAX_MODULE_SPEED);
-
-    //     for (int i = 0; i < modules.length; i++) {
-    //         modules[i].setTargetState(filterModuleState(states[i]));
-    //     }
-    // }
-
-    // public void setChassisSpeeds(ChassisSpeeds speeds) {
-    //     SmartDashboard.putNumber("Swerve/Chassis Target X", speeds.vxMetersPerSecond);
-    //     SmartDashboard.putNumber("Swerve/Chassis Target Y", speeds.vyMetersPerSecond);
-    //     SmartDashboard.putNumber("Swerve/Chassis Target Omega", speeds.omegaRadiansPerSecond);
-
-    //     setModuleStates(kinematics.toSwerveModuleStates(speeds));
-    // }
-
-    // public void drive(Translation2d velocity, double rotation) {
-    //     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(velocity.getX(), -velocity.getY(), -rotation, getPose().getRotation());
-        
-    //     Pose2d robotVel = new Pose2d(
-    //         0.02 * speeds.vxMetersPerSecond,
-    //         0.02 * speeds.vyMetersPerSecond,
-    //         Rotation2d.fromRadians(0.02 * speeds.omegaRadiansPerSecond));
-
-    //     Twist2d twistVel = new Pose2d().log(robotVel);
-        
-    //     setChassisSpeeds(new ChassisSpeeds(
-    //         twistVel.dx / 0.02,
-    //         twistVel.dy / 0.02,
-    //         twistVel.dtheta / 0.02
-    //     ));
-    // }
-    
-    // public void stop() {
-    //     setChassisSpeeds(new ChassisSpeeds());
-    // }
-
-    // public Rotation2d getGyroAngle() {
-    //     return gyro.getRotation2d();
-    // }
-
-    // public double getGyroYaw() {
-    //     return gyro.getYaw().getValueAsDouble();
-    // }
-
-    // public double getGyroPitch() {
-    //     return gyro.getPitch().getValueAsDouble();
-    // }
-
-    // public double getGyroRoll() {
-    //     return gyro.getRoll().getValueAsDouble();
-    // }
-    
-    // public double getForwardAccelerationGs() {
-    //     return gyro.getAccelerationY().getValueAsDouble();
-    // }
-
-    // public SwerveDriveKinematics getKinematics() {
-    //     return kinematics;
-    // }
-
-    // public void setXMode() {
-    //     setModuleStates(
-    //             new SwerveModuleState[] {
-    //                 new SwerveModuleState(0, Rotation2d.fromDegrees(225)),
-    //                 new SwerveModuleState(0, Rotation2d.fromDegrees(315)),
-    //                 new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-    //                 new SwerveModuleState(0, Rotation2d.fromDegrees(135))
-    //             }
-    //         );
-    // }
-
-    // public Field2d getField() {
-    //     return field;
-    // }
-
-    // public Pose2d getPose() {
-    //     return odometry.getPoseMeters();
-    // }
-
-    // public void reset(Pose2d pose) {
-    //     odometry.resetPosition(getGyroAngle(), getModulePositions(), pose);
-    // }
-
-    // public void updateOdometry() {
-    //     odometry.update(getGyroAngle(), getModulePositions());
-    // }
-
-    // @Override
-    // public void periodic() {
-    //     updateOdometry();
-    //     Pose2d pose = getPose();
-
-    //     for (int i = 0; i < modules.length; i++) {
-    //         modules2ds[i].setPose(new Pose2d(
-    //             pose.getTranslation().plus(modules[i].getTranslationOffset().rotateBy(pose.getRotation())),
-    //             modules[i].getAngle().plus(pose.getRotation())
-    //         ));
-    //     }
-
-    //     SmartDashboard.putNumber("Swerve/Gyro/Angle (deg)", getGyroAngle().getDegrees());
-    //     SmartDashboard.putNumber("Swerve/Gyro/Pitch (deg)", getGyroPitch());
-    //     SmartDashboard.putNumber("Swerve/Gyro/Roll (deg)", getGyroRoll());
-
-    //     SmartDashboard.putNumber("Swerve/Forward Acceleration  (Gs)", getForwardAccelerationGs());
-    //     SmartDashboard.putNumber("Swerve/X Acceleration (Gs)", gyro.getAccelerationX().getValueAsDouble());
-    //     SmartDashboard.putNumber("Swerve/Y Acceleration (Gs)", gyro.getAccelerationY().getValueAsDouble());
-    //     SmartDashboard.putNumber("Swerve/Z Acceleration (Gs)", gyro.getAccelerationZ().getValueAsDouble());
-
-    //     SmartDashboard.putNumber("Swerve/Chassis X Speed", getChassisSpeeds().vxMetersPerSecond);
-    //     SmartDashboard.putNumber("Swerve/Chassis Y Speed", getChassisSpeeds().vyMetersPerSecond);
-    //     SmartDashboard.putNumber("Swerve/Chassis Rotation", getChassisSpeeds().omegaRadiansPerSecond);
-    // }
 }

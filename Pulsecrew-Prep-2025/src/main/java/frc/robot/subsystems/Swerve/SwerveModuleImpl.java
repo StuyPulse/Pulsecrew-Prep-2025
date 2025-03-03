@@ -32,15 +32,14 @@ public class SwerveModuleImpl extends SwerveModule {
 
         pivotMotor = new SparkMax(pivotMotorID, MotorType.kBrushless);
         pivotMotor.configure(Motors.Swerve.Turn.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        pivotEncoder = new CANcoder(pivotEncoderID, "Swerve Drive Drive");
+        pivotEncoder = new CANcoder(pivotEncoderID);
         
-        driveMotor = new TalonFX(driveMotorID, "Swerve Drive Drive");
+        driveMotor = new TalonFX(driveMotorID);
 
         driveMotor.getConfigurator().apply(Motors.Swerve.Drive.motorConfig);
         driveMotor.setPosition(0);
 
         pivotController = new PIDController(Motors.Turn.kP, Motors.Turn.kI, Motors.Turn.kD);
-        pivotController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     public double getPosition() {
@@ -66,7 +65,7 @@ public class SwerveModuleImpl extends SwerveModule {
     @Override
     public void periodic() {
         super.periodic();
-        double voltage = pivotController.calculate(getAngle().getRadians(), getTargetState().angle.getRadians());
+        double voltage = pivotController.calculate(getAngle().getDegrees(), getTargetState().angle.getDegrees());
 
         if (Math.abs(getTargetState().speedMetersPerSecond) < 0.05) {
             driveMotor.setControl(new VelocityVoltage(0));
