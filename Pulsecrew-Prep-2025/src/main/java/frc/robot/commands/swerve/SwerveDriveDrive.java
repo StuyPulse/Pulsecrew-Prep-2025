@@ -31,8 +31,8 @@ public class SwerveDriveDrive extends Command{
             x /= inputVel.getNorm();
             y /= inputVel.getNorm();
 
-            x *= x * 1.5;
-            y *= y * 1.5; 
+            x *= Math.abs(x);
+            y *= Math.abs(y); 
             
             if (Robot.isBlue()) {
                 return new Translation2d(x, y);

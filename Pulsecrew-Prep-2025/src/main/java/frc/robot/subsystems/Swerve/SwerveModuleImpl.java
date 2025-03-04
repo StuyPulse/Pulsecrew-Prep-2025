@@ -1,8 +1,11 @@
 package frc.robot.subsystems.Swerve;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -25,7 +28,7 @@ public class SwerveModuleImpl extends SwerveModule {
 
     private final PIDController pivotController;
 
-    public SwerveModuleImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID) {
+    public SwerveModuleImpl(String name, Translation2d location, Rotation2d angleOffset, int driveMotorID, int pivotMotorID, int pivotEncoderID, boolean driveInverted) {
         super(name, location);
 
         this.angleOffset = angleOffset;
@@ -36,7 +39,18 @@ public class SwerveModuleImpl extends SwerveModule {
         
         driveMotor = new TalonFX(driveMotorID, "Swerve Drive Drive");
 
-        driveMotor.getConfigurator().apply(Motors.Swerve.Drive.motorConfig);
+        
+        InvertedValue inverted;
+        if (driveInverted) {
+            inverted = InvertedValue.CounterClockwise_Positive;
+        } else {
+            inverted = InvertedValue.Clockwise_Positive;
+        }
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
+            .withInverted(inverted)
+            .withNeutralMode(NeutralModeValue.Brake);
+
+        driveMotor.getConfigurator().apply(Motors.Swerve.Drive.motorConfig.withMotorOutput(motorOutputConfigs));
         driveMotor.setPosition(0);
 
         pivotController = new PIDController(Motors.Swerve.Turn.kP, Motors.Swerve.Turn.kI, Motors.Swerve.Turn.kD);

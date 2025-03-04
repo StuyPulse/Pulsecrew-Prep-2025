@@ -43,9 +43,7 @@ public class Motors {
                 .withKI(kI)
                 .withKD(kD);
             
-            MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
-                .withInverted(InvertedValue.Clockwise_Positive)
-                .withNeutralMode(NeutralModeValue.Brake);
+
 
             ClosedLoopRampsConfigs closedLoopRampsConfigs = new ClosedLoopRampsConfigs()
                 .withTorqueClosedLoopRampPeriod(0.25);
@@ -57,7 +55,6 @@ public class Motors {
 
             TalonFXConfiguration motorConfig = new TalonFXConfiguration()
                 .withSlot0(slot0Configs)
-                .withMotorOutput(motorOutputConfigs)
                 .withClosedLoopRamps(closedLoopRampsConfigs)
                 .withCurrentLimits(currentLimitsConfigs)
                 .withFeedback(feedbackConfigs);
