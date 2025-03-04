@@ -21,25 +21,27 @@ public class SwerveDriveDrive extends Command{
 
         speed = () -> {
             Translation2d inputVel = getInputVelocity();
-            if (inputVel.getNorm() < 0.07){
+            if (inputVel.getNorm() < 0.05){
                 return new Translation2d();
             }
             double x = inputVel.getX();
             double y = inputVel.getY();
 
+
             x /= inputVel.getNorm();
             y /= inputVel.getNorm();
 
-            x *= x * 1.5;
-            y *= y * 1.5; 
+            x *= Math.abs(x) * 1.0;
+            y *= Math.abs(y) * 1.0;
             
             return new Translation2d(x, y);
         };
+
         
         turn = () -> {
             double inputTurn = -driver.getRightX();
 
-            if (Math.abs(inputTurn) < 0.07){
+            if (Math.abs(inputTurn) < 0.05){
                 return 0;
             }
             

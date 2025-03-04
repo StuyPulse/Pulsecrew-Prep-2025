@@ -9,7 +9,7 @@ public class Mobility extends SequentialCommandGroup {
     public Mobility() {
         addCommands(
             new WaitCommand(1),
-            new SwerveDriveForward(2).withTimeout(1)
+            new SwerveDriveForward(1).withTimeout(1)
         );
     }
 
