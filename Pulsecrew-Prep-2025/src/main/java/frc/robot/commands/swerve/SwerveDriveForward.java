@@ -2,6 +2,7 @@ package frc.robot.commands.swerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.Swerve.SwerveDrive;
 
 public class SwerveDriveForward extends Command {
@@ -18,6 +19,9 @@ public class SwerveDriveForward extends Command {
 
     @Override
     public void execute() {
+        // if (Robot.isBlue()) {
+        //     speed *= -0.5;
+        // }
         swerve.drive(new Translation2d(speed, 0), 0);
     }
 }

@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.Swerve.SwerveDrive;
 
 public class SwerveDriveDrive extends Command{
@@ -31,10 +32,16 @@ public class SwerveDriveDrive extends Command{
             x /= inputVel.getNorm();
             y /= inputVel.getNorm();
 
-            x *= Math.abs(x) * 1.0;
-            y *= Math.abs(y) * 1.0;
+            x *= Math.abs(x) * 1.5;
+            y *= Math.abs(y) * 1.5;
             
-            return new Translation2d(x, y);
+            if (Robot.isBlue()) {
+                return new Translation2d(x, -y);
+            } else {
+                return new Translation2d(-x, y);
+            }
+
+            
         };
 
         
