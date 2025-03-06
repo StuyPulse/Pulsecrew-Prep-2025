@@ -10,8 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.auton.DoNothingAuton;
 import frc.robot.commands.auton.Mobility;
+import frc.robot.commands.auton.PPMobility;
 import frc.robot.commands.swerve.SwerveDriveDrive;
 import frc.robot.subsystems.Swerve.SwerveDrive;
+import frc.robot.util.PathUtil.AutonConfig;
 
 public class RobotContainer {
 
@@ -30,8 +32,18 @@ public class RobotContainer {
   }
 
   private void configureAutons() {
+    swerve.configureAutoBuilder();
+
     autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
     autonChooser.addOption("Mobility", new Mobility());
+
+    AutonConfig BLUE_MOBILITY = new AutonConfig("Mobility", PPMobility::new,
+    "Mobility");
+    AutonConfig RED_MOBILITY = new AutonConfig("Mobility", PPMobility::new, 
+    "Mobility");
+
+    BLUE_MOBILITY.registerBlue(autonChooser);
+    RED_MOBILITY.registerRed(autonChooser);
 
     SmartDashboard.putData("Auton", autonChooser);
   }

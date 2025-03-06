@@ -1,6 +1,11 @@
 package frc.robot.subsystems.Swerve;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +19,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.constants.Field;
@@ -168,11 +174,6 @@ public class SwerveDrive extends SubsystemBase{
         }
     }
 
-    // /** PATH FOLLOWING **/
-    // public Command followPathCommand(PathPlannerPath path) {
-    //     return AutoBuilder.followPath(path);
-    // }
-
     /** GYRO API **/
     public Rotation2d getGyroAngle() {
         return gyro.getRotation2d();
@@ -205,27 +206,32 @@ public class SwerveDrive extends SubsystemBase{
         setModuleStates(state);
     }
 
-    // public void configureAutoBuilder() {        
-    //     try{
-    //         Odometry odometry = Odometry.getInstance();
+    public void configureAutoBuilder() {        
+        try{
+            Odometry odometry = Odometry.getInstance();
 
-    //         AutoBuilder.configure(
-    //             odometry::getPose,
-    //             odometry::reset,
-    //             this::getChassisSpeeds,
-    //             (speeds, feedforwards) -> setChassisSpeeds(speeds),
-    //             new PPHolonomicDriveController(
-    //                 Settings.Swerve.Alignment.XY,
-    //                 Settings.Swerve.Alignment.THETA
-    //             ),
-    //             RobotConfig.fromGUISettings(),
-    //             () -> false,
-    //             instance
-    //         );
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //     }
-    // }
+            AutoBuilder.configure(
+                odometry::getPose,
+                odometry::reset,
+                this::getChassisSpeeds,
+                (speeds, feedforwards) -> setChassisSpeeds(speeds),
+                new PPHolonomicDriveController(
+                    new PIDConstants(2.0, 0, 0.2),
+                    new PIDConstants(3, 0, 0.1)
+                ),
+                RobotConfig.fromGUISettings(),
+                () -> false,
+                instance
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /** PATH FOLLOWING **/
+    public Command followPathCommand(PathPlannerPath path) {
+        return AutoBuilder.followPath(path);
+    }
 
     @Override
     public void periodic() {
